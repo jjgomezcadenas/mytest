@@ -107,49 +107,81 @@ position:
   postrue: if using true values
 
 """
-function cdoi(df::DataFrame, r1::Vector{Float64}, r2::Vector{Float64},
-              position::Possel=postrue, nlxe::Number=1.6)
+function cdoi(df::DataFrame, position::Possel=postrue, nlxe::Number=1.6)
     clxe = SpeedOfLightInVacuum/nlxe
 
     if position == posreco
         dxrb1 = [dxyz([df.x1[i], df.y1[i], df.z1[i]],
-                              [df.xb1[i], df.yb1[i], df.zb1[i]]) for i in 1:nrow(df)]
+                            [df.xb1[i], df.yb1[i], df.zb1[i]]) for i in 1:nrow(df)]
 
         dxrb2 = [dxyz([df.x2[i], df.y2[i], df.z2[i]],
-                              [df.xb2[i], df.yb2[i], df.zb2[i]]) for i in 1:nrow(df)]
+                            [df.xb2[i], df.yb2[i], df.zb2[i]]) for i in 1:nrow(df)]
 
     elseif position == posrecall
 
-        xq1,yq1,zq1 =  radial_correction(df.xr1./mm, df.yr1./mm, df.zr1./mm, r1)
-        xq2,yq2,zq2 =  radial_correction(df.xr2./mm, df.yr2./mm, df.zr2./mm, r2)
+        xq1,yq1,zq1 =  radial_correction(df.xr1./mm, df.yr1./mm, df.zr1./mm, df.r1x./mm)
+        xq2,yq2,zq2 =  radial_correction(df.xr2./mm, df.yr2./mm, df.zr2./mm, df.r2x./mm)
 
         dxrb1 = [dxyz([xq1[i]*mm, yq1[i]*mm, zq1[i]*mm],
-                              [df.xb1[i], df.yb1[i], df.zb1[i]]) for i in 1:nrow(df)]
+                            [df.xb1[i], df.yb1[i], df.zb1[i]]) for i in 1:nrow(df)]
 
         dxrb2 = [dxyz([xq2[i]*mm, yq2[i]*mm, zq2[i]*mm],
-                              [df.xb2[i], df.yb2[i], df.zb2[i]]) for i in 1:nrow(df)]
+                            [df.xb2[i], df.yb2[i], df.zb2[i]]) for i in 1:nrow(df)]
 
     else
         dxrb1 = [dxyz([df.xt1[i], df.yt1[i], df.zt1[i]],
-                              [df.xb1[i], df.yb1[i], df.zb1[i]]) for i in 1:nrow(df)]
+                            [df.xb1[i], df.yb1[i], df.zb1[i]]) for i in 1:nrow(df)]
 
         dxrb2 = [dxyz([df.xt2[i], df.yt2[i], df.zt2[i]],
-                              [df.xb2[i], df.yb2[i], df.zb2[i]]) for i in 1:nrow(df)]
+                            [df.xb2[i], df.yb2[i], df.zb2[i]]) for i in 1:nrow(df)]
 
     end
     return uconvert.(ps, (dxrb2 - dxrb1)/clxe)
 end
 
+# function cdoi(df::DataFrame, r1::Vector{Float64}, r2::Vector{Float64},
+#               position::Possel=postrue, nlxe::Number=1.6)
+#     clxe = SpeedOfLightInVacuum/nlxe
 
-function cdoi(df::DataFrame, position::Possel=postrue, reco="phistd", nlxe::Number=1.6)
-    if reco == "phistd"
-        return cdoi(df, df.r1p./mm , df.r2p./mm, position, nlxe)
-    elseif reco == "zstd"
-        return cdoi(df, df.r1z./mm , df.r2z./mm, position, nlxe)
-    else
-        return cdoi(df, df.r1./mm , df.r2./mm, position, nlxe)
-    end
-end
+#     if position == posreco
+#         dxrb1 = [dxyz([df.x1[i], df.y1[i], df.z1[i]],
+#                               [df.xb1[i], df.yb1[i], df.zb1[i]]) for i in 1:nrow(df)]
+
+#         dxrb2 = [dxyz([df.x2[i], df.y2[i], df.z2[i]],
+#                               [df.xb2[i], df.yb2[i], df.zb2[i]]) for i in 1:nrow(df)]
+
+#     elseif position == posrecall
+
+#         xq1,yq1,zq1 =  radial_correction(df.xr1./mm, df.yr1./mm, df.zr1./mm, r1)
+#         xq2,yq2,zq2 =  radial_correction(df.xr2./mm, df.yr2./mm, df.zr2./mm, r2)
+
+#         dxrb1 = [dxyz([xq1[i]*mm, yq1[i]*mm, zq1[i]*mm],
+#                               [df.xb1[i], df.yb1[i], df.zb1[i]]) for i in 1:nrow(df)]
+
+#         dxrb2 = [dxyz([xq2[i]*mm, yq2[i]*mm, zq2[i]*mm],
+#                               [df.xb2[i], df.yb2[i], df.zb2[i]]) for i in 1:nrow(df)]
+
+#     else
+#         dxrb1 = [dxyz([df.xt1[i], df.yt1[i], df.zt1[i]],
+#                               [df.xb1[i], df.yb1[i], df.zb1[i]]) for i in 1:nrow(df)]
+
+#         dxrb2 = [dxyz([df.xt2[i], df.yt2[i], df.zt2[i]],
+#                               [df.xb2[i], df.yb2[i], df.zb2[i]]) for i in 1:nrow(df)]
+
+#     end
+#     return uconvert.(ps, (dxrb2 - dxrb1)/clxe)
+# end
+
+
+# function cdoi(df::DataFrame, position::Possel=postrue, reco="phistd", nlxe::Number=1.6)
+#     if reco == "phistd"
+#         return cdoi(df, df.r1p./mm , df.r2p./mm, position, nlxe)
+#     elseif reco == "zstd"
+#         return cdoi(df, df.r1z./mm , df.r2z./mm, position, nlxe)
+#     else
+#         return cdoi(df, df.r1./mm , df.r2./mm, position, nlxe)
+#     end
+# end
 
 
 function ctsr(df::DataFrame, position::Possel=postrue)
@@ -174,7 +206,7 @@ end
 
 Return the CRT of the system
 """
-function crt(dfu, r1::Vector{Float64}, r2::Vector{Float64}, dtsel=dtfirst, posel=postrue)
+function crt(dfu, dtsel=dtfirst, posel=postrue)
 
     dt12 = deltatime(dfu, dtsel)
     t12 = dt12./ps
@@ -182,11 +214,18 @@ function crt(dfu, r1::Vector{Float64}, r2::Vector{Float64}, dtsel=dtfirst, posel
     dtsr12 = ctsr(dfu, postrue)   # this is a nominal position for CRT
     tsr12 = dtsr12./ps
 
-    dtrb12 = cdoi(dfu, r1, r2, posel)
+    dtrb12 = cdoi(dfu,  posel)
     trb12 = dtrb12 ./ps
 
     dt = t12 - tsr12 - trb12
 
+end
+
+function dxf(df::DataFrame, t::Dtsel=dtfirst, position::Possel=postrue)
+    dt12  = deltatime(df,t)
+    dtdoi = cdoi(df, position)
+    # compute dx from time and speed of light, ensure that the result is in mm
+    uconvert.(mm, (dt12 - dtdoi) * SpeedOfLightInVacuum)
 end
 
 """
@@ -196,21 +235,20 @@ Take dataframe df and return a vector of MlemLor.
 Since MlemLor will be written to file, remove units (e.g, use implicit units, in this
 case mm) and transform to Float32
 """
-function dftolor(df::DataFrame, t::Dtsel=dtfirst, position::Possel=postrue, nlxe::Number=1.6)
+function dftolor(df::DataFrame, t::Dtsel=dtfirst, position::Possel=postrue)
 
     function tof32(l)
         Float32.(l/mm)
     end
 
-    dt12  = deltatime(df,t)
-    dtdoi = cdoi(df,position)
-    # compute dx from time and speed of light, ensure that the result is in mm
-    dx    = uconvert.(mm, (dt12 - dtdoi) * SpeedOfLightInVacuum)
-
+    dx    = dxf(df, t, position)
     if position == postrue
         x1, x2, y1, y2, z1, z2 = df.xt1, df.xt2, df.yt1, df.yt2, df.zt1, df.zt2
-    else
+    elseif position == posreco
         x1, x2, y1, y2, z1, z2 = df.x1,  df.x2,  df.y1,  df.y2,  df.z1,  df.z2
+    else
+        xq,y1,z1 =  radial_correction(df.xr1./mm, df.yr1./mm, df.zr1./mm, df.r1x./mm)
+        x2,y2,z2 =  radial_correction(df.xr2./mm, df.yr2./mm, df.zr2./mm, df.r2x./mm)
     end
 
     MlemLor.(tof32(dx),tof32(x1),tof32(y1),tof32(z1), tof32(x2), tof32(y2), tof32(z2))
