@@ -244,12 +244,14 @@ function dftolor(df::DataFrame, t::Dtsel=dtfirst, position::Possel=postrue)
     dx    = dxf(df, t, position)
     if position == postrue
         x1, x2, y1, y2, z1, z2 = df.xt1, df.xt2, df.yt1, df.yt2, df.zt1, df.zt2
+        return MlemLor.(tof32(dx),tof32(x1),tof32(y1),tof32(z1), tof32(x2), tof32(y2), tof32(z2))
     elseif position == posreco
         x1, x2, y1, y2, z1, z2 = df.x1,  df.x2,  df.y1,  df.y2,  df.z1,  df.z2
+        return MlemLor.(tof32(dx),tof32(x1),tof32(y1),tof32(z1), tof32(x2), tof32(y2), tof32(z2))
     else
-        xq,y1,z1 =  radial_correction(df.xr1./mm, df.yr1./mm, df.zr1./mm, df.r1x./mm)
+        x1,y1,z1 =  radial_correction(df.xr1./mm, df.yr1./mm, df.zr1./mm, df.r1x./mm)
         x2,y2,z2 =  radial_correction(df.xr2./mm, df.yr2./mm, df.zr2./mm, df.r2x./mm)
+        return MlemLor.(tof32(dx),Float32.(x1),Float32.(y1),Float32.(z1), Float32.(x2), Float32.(y2), Float32.(z2))
     end
 
-    MlemLor.(tof32(dx),tof32(x1),tof32(y1),tof32(z1), tof32(x2), tof32(y2), tof32(z2))
 end

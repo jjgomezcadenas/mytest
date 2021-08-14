@@ -24,6 +24,34 @@ function writemdf(dir, file, df)
 end
 
 
+function pathfinder(rootdir, conf)
+    mdf = string(conf, "-mdf")
+    lor = string(conf, "-lor")
+    phif = string("mdf-phistd-",conf,".csv")
+    zf = string("mdf-zstd-",conf,".csv")
+
+    mdfdir = joinpath(rootdir, mdf)
+    phipath = joinpath(mdfdir, phif)
+    zpath = joinpath(mdfdir, zf)
+    
+    lordir = joinpath(rootdir, lor)
+
+    if isdir(lordir) == false
+        mkdir(lordir)
+    end
+
+    philp = string("lor-phistd-",conf)
+    zlp = string("lor-zstd-",conf)
+    return (phipath= phipath, zpath = zpath, lordir=lordir, philp = philp, zlp = zlp)
+
+end
+
+
+function getlorpath(lordir, prefix, posfix="first-true")
+    fullpath = string(prefix,"-",posfix,".h5")
+    joinpath(lordir, fullpath)
+end
+
 """
     selectinterval(df, column1, column2, xmin, xmax)
 
